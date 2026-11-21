@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Florencia Digital Emprende</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap">
+<style>
+/* Layout: cabecera fija con navegación; contenido en una columna central de 1120px; en celular, barra inferior de 4 accesos.
+   Paleta: verde selva como color principal, naranja como acento, neutros con tinte verde. */
+:root{
+  --bg:#F4F7F5; --surface:#FFFFFF; --fg:#1B2420; --muted:#5A6862; --line:#DCE5E0;
+  --primary:#2E7D5B; --primary-ink:#FFFFFF; --primary-soft:#E2F1E9; --primary-deep:#1F5C42;
+  --accent:#E57F12; --accent-soft:#FDEBD3;
+  --err:#C62828; --err-soft:#FBE8E8; --ok:#2E7D5B; --shadow:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.06);
+  --display:"Poppins","Segoe UI",system-ui,sans-serif; --body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1512; --surface:#16201B; --fg:#E7EFEA; --muted:#9BB0A5; --line:#2A3A32;
+  --primary:#4DB285; --primary-ink:#08160F; --primary-soft:#1B3329; --primary-deep:#7FD1AB;
+  --accent:#F4A04A; --accent-soft:#3A2A14; --err:#F07C7C; --err-soft:#3B1D1D; --ok:#4DB285;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1512; --surface:#16201B; --fg:#E7EFEA; --muted:#9BB0A5; --line:#2A3A32;
+  --primary:#4DB285; --primary-ink:#08160F; --primary-soft:#1B3329; --primary-deep:#7FD1AB;
+  --accent:#F4A04A; --accent-soft:#3A2A14; --err:#F07C7C; --err-soft:#3B1D1D; --ok:#4DB285;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.3); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+h1,h2,h3{font-family:var(--display);line-height:1.2;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4.2vw,2.5rem);font-weight:700}
+h2{font-size:1.5rem;font-weight:600} h3{font-size:1.05rem;font-weight:600}
+p{margin:0} a{color:var(--primary-deep)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto}
+.proto{font-size:.8rem;color:var(--muted);text-align:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+header.top{margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+header.top .wrap{display:flex;align-items:center;gap:24px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;font:600 1.05rem var(--display);color:var(--fg);text-decoration:none;white-space:nowrap}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center}
+nav.main{margin-left:auto;display:flex;gap:4px}
+nav.main a{padding:10px 14px;border-radius:10px;text-decoration:none;color:var(--muted);font-weight:500}
+nav.main a:hover{background:var(--primary-soft);color:var(--fg)}
+nav.main a[aria-current="page"]{color:var(--primary-deep);background:var(--primary-soft);font-weight:600}
+main{padding-block:32px 56px;min-height:70vh}
+section.screen{display:none} section.screen.on{display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:12px;border:1.5px solid var(--primary);background:var(--primary);color:var(--primary-ink);font:600 1rem var(--body);cursor:pointer;text-decoration:none}
+.btn:hover{filter:brightness(1.06)} .btn:active{transform:translateY(1px)}
+.btn.sec{background:transparent;color:var(--primary-deep)} .btn.sec:hover{background:var(--primary-soft)}
+.btn.acc{background:var(--accent);border-color:var(--accent);color:#1B1206}
+.btn.sm{min-height:38px;padding:0 16px;font-size:.92rem} .btn[disabled]{opacity:.45;cursor:not-allowed}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:20px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:32px;align-items:center;background:var(--primary-soft);border-radius:24px;padding:40px}
+.utab{width:100%;border-collapse:collapse;text-align:left}
+.utab th,.utab td{padding:10px 12px;border-bottom:1px solid var(--line)}
+.utab th{font-weight:600}
+.auth{max-width:440px;margin:24px auto 0}
+.auth h1{font-size:1.7rem}
+.auth-alt{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:22px;color:var(--muted)}
+.promo{background:var(--primary-soft);border-color:transparent;padding:28px}
+.steps{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:18px}
+.steps li{display:flex;gap:14px}
+.steps .n{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+.steps p{color:var(--muted);margin-top:2px}
+.homeIn{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.homeIn .card{padding:24px}
+.homeIn .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.homeIn .tip{background:var(--accent-soft);border-color:transparent}
+.homeIn .tip b{color:var(--accent)}
+.homeIn .tip p{margin-top:8px}
+.hero p.lead{font-size:1.1rem;color:var(--muted);margin:14px 0 24px;max-width:52ch}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap}
+.art{aspect-ratio:4/3;max-width:100%;border-radius:20px;background:linear-gradient(145deg,var(--surface),var(--primary-soft));border:1px solid var(--line);display:grid;place-items:center;position:relative;overflow:hidden}
+.art svg{width:82%;height:auto}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:20px}
+.mod{display:flex;flex-direction:column;gap:10px;padding:20px}
+.mod .ic{width:48px;height:48px;border-radius:14px;background:var(--primary-soft);color:var(--primary-deep);display:grid;place-items:center}
+.mod .meta{color:var(--muted);font-size:.88rem;flex:1}
+.mod .tag{display:inline-block;font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);width:max-content}
+.sec-h{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-top:40px;flex-wrap:wrap}
+.sub{color:var(--muted);margin-top:6px}
+/* forms */
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.field{display:flex;flex-direction:column;gap:6px;margin-top:16px}
+label{font-weight:600;font-size:.92rem}
+input[type=text],input[type=email],input[type=password],select,textarea{width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:inherit}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.field.bad input,.field.bad select,.field.bad textarea{border-color:var(--err);background:var(--err-soft)}
+.msg{font-size:.86rem;color:var(--err);min-height:1.2em;display:none} .field.bad .msg{display:block}
+.pw{position:relative} .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--primary-deep);font-weight:600;cursor:pointer;padding:8px 10px;border-radius:8px}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:.92rem}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--primary)}
+.alert{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;font-size:.92rem;font-weight:500}
+.alert.on{display:block} .alert.err{background:var(--err-soft);color:var(--err)} .alert.ok{background:var(--primary-soft);color:var(--primary-deep)}
+/* progress */
+.bar{height:12px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .35s}
+.row-bar{display:grid;grid-template-columns:minmax(120px,1.2fr) 2fr 52px;gap:14px;align-items:center;margin-top:16px}
+.row-bar b{text-align:right;font-variant-numeric:tabular-nums}
+.lvl{font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:99px}
+.lvl.Alto{background:var(--primary-soft);color:var(--primary-deep)} .lvl.Medio{background:var(--accent-soft);color:var(--accent)} .lvl.Bajo{background:var(--err-soft);color:var(--err)}
+/* quiz */
+.opt{display:flex;gap:12px;align-items:center;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;margin-top:10px;cursor:pointer;background:var(--surface)}
+.opt:hover{border-color:var(--primary)} .opt input{accent-color:var(--primary);width:20px;height:20px}
+.opt.sel{border-color:var(--primary);background:var(--primary-soft)}
+.qrow{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+/* module */
+.mlayout{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start}
+.crumb{font-size:.88rem;color:var(--muted);margin-bottom:18px}
+.les{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);font:inherit;margin-top:8px;cursor:pointer}
+.les[aria-current="true"]{border-color:var(--primary);background:var(--primary-soft);font-weight:600}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:var(--primary-ink)}
+.dot.done{background:var(--primary);border-color:var(--primary)}
+.video{aspect-ratio:16/9;border-radius:16px;background:linear-gradient(135deg,var(--primary-deep),var(--primary));display:grid;place-items:center;color:#fff;position:relative;max-width:100%}
+.video .play{width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--primary-deep)}
+.video small{position:absolute;left:16px;bottom:12px;opacity:.95}
+.example{background:var(--accent-soft);border-radius:14px;padding:16px 18px;margin-top:18px}
+.example b{color:var(--accent)} .example p{margin-top:6px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.pend li{margin-top:8px;display:flex;gap:10px;align-items:center}
+.pend{list-style:none;padding:0;margin:12px 0 0}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:24px;align-items:start}
+.stack{display:grid;gap:20px}
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:12px 20px;border-radius:12px;font-weight:500;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:calc(100% - 32px)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+footer.rev{border-top:1px dashed var(--line);padding:20px 0 120px;color:var(--muted);font-size:.86rem}
+footer.rev a{margin-right:12px;white-space:nowrap}
+nav.bottom{display:none}
+@media (max-width:860px){
+  .homeIn{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr;padding:28px 22px} .cols2,.grid3,.mlayout{grid-template-columns:1fr}
+  .row-bar{grid-template-columns:1fr 52px} .row-bar .bar{grid-column:1/-1;order:3}
+}
+@media (max-width:760px){
+  nav.main{display:none}
+  nav.bottom{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-right,0px))}
+  nav.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:.74rem;font-weight:500;color:var(--muted);text-decoration:none;min-height:48px}
+  nav.bottom a[aria-current="page"]{color:var(--primary-deep);font-weight:600}
+  header.top .wrap{min-height:56px} h1{font-size:1.65rem} main{padding-top:20px}
+  .card{padding:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 11v2a2 2 0 0 0 2 2h2l5 4V5L8 9H6a2 2 0 0 0-2 2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M17 9a4 4 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14v10H10l-4 4v-4H5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 12 2.2 2.2L15 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4 3 20h18Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4.5M12 17.3v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9h-5v-6H9v6H4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7Z" fill="currentColor"/></symbol>
+ </defs>
+</svg>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="#inicio"><span class="logo"><svg width="20" height="20"><use href="#i-grid"/></svg></span>Florencia Digital Emprende</a>
+  <nav class="main" id="navMain" aria-label="Principal"></nav>
+</div></header>
+
+<main class="wrap" id="app">
+
+<!-- 1 INICIO -->
+<section class="screen" id="s-inicio" aria-labelledby="h-inicio">
+  <div class="homeIn" id="homeIn" hidden>
+    <div class="card"><h1 id="h-home">Hola</h1><p class="sub" id="hSub">Retoma tu aprendizaje donde lo dejaste.</p>
+      <div class="row-bar" style="margin-top:18px"><span>Avance general</span><div class="bar"><i id="hBar" style="width:0"></i></div><b id="hPct">0%</b></div>
+      <div class="actions"><button class="btn" id="hGo" type="button">Continuar</button><a class="btn sec" id="hDiag" href="#diagnostico">Hacer mi diagnóstico</a></div></div>
+    <div class="card tip"><b>Consejo del día</b><p>Ningún banco te pedirá tu clave ni un código por WhatsApp. Si dudas de un mensaje, no respondas y llama tú al número oficial.</p></div>
+  </div>
+  <div class="hero" id="heroPub">
+    <div>
+      <h1 id="h-inicio">Aprende a promocionar y proteger tu negocio en internet</h1>
+      <p class="lead">Módulos cortos y prácticos, pensados para comerciantes y emprendedores de Florencia, Caquetá. Aprende a tu ritmo, desde el celular.</p>
+      <div class="actions"><a class="btn" href="#registro">Crear mi cuenta</a><a class="btn sec" href="#ingresar" data-focus="login">Ya tengo cuenta</a></div>
+    </div>
+    <div class="art" role="img" aria-label="Ilustración de una tienda con una publicación en el celular">
+      <svg viewBox="0 0 320 240" fill="none"><rect x="30" y="86" width="150" height="110" rx="10" fill="var(--surface)" stroke="var(--primary)" stroke-width="3"/><path d="M22 86h166l-12-34H34Z" fill="var(--accent)"/><rect x="48" y="118" width="40" height="78" rx="6" fill="var(--primary-soft)" stroke="var(--primary)" stroke-width="3"/><rect x="104" y="116" width="60" height="38" rx="6" fill="var(--primary-soft)"/><rect x="204" y="52" width="86" height="156" rx="16" fill="var(--surface)" stroke="var(--primary-deep)" stroke-width="3"/><rect x="216" y="74" width="62" height="40" rx="6" fill="var(--primary)"/><rect x="216" y="124" width="48" height="7" rx="3.5" fill="var(--line)"/><rect x="216" y="139" width="62" height="7" rx="3.5" fill="var(--line)"/><circle cx="247" cy="182" r="11" fill="var(--accent)"/></svg>
+    </div>
+  </div>
+  <div class="sec-h"><div><h2>Módulos de formación</h2><p class="sub">Cinco temas, de 20 a 30 minutos cada uno.</p></div></div>
+  <div class="mods" id="modsHome"></div>
+</section>
+
+<!-- MODULOS -->
+<section class="screen" id="s-modulos" aria-labelledby="h-modulos">
+  <h1 id="h-modulos">Módulos de formación</h1><p class="sub">Elige un módulo para empezar o continuar donde ibas.</p>
+  <div class="mods" id="modsAll"></div>
+</section>
+
+<!-- 2 REGISTRO (crear cuenta) -->
+<section class="screen" id="s-registro" aria-labelledby="h-registro">
+  <h1 id="h-registro">Crea tu cuenta</h1><p class="sub">Es gratis y solo toma un minuto.</p>
+  <div class="cols2" style="margin-top:24px">
+    <form class="card" id="fReg" novalidate>
+      <h2>Tus datos</h2>
+      <div class="field"><label for="rNom">Nombre completo</label><input id="rNom" type="text" autocomplete="name" placeholder="Escribe tu nombre"><span class="msg">Escribe tu nombre completo.</span></div>
+      <div class="field"><label for="rMail">Correo electrónico</label><input id="rMail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com"><span class="msg">Escribe un correo válido, por ejemplo tucorreo@ejemplo.com.</span></div>
+      <div class="field"><label for="rPw">Contraseña</label><div class="pw"><input id="rPw" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres"><button type="button" data-show="rPw">Mostrar</button></div><span class="msg">Usa al menos 8 caracteres.</span></div>
+      <div class="field"><label for="rPw2">Confirmar contraseña</label><input id="rPw2" type="password" autocomplete="new-password" placeholder="Repite la contraseña"><span class="msg">Las contraseñas no coinciden.</span></div>
+      <div class="field" id="fCons"><label class="check" for="rCons" style="font-weight:400"><input id="rCons" type="checkbox"><span>Acepto el tratamiento de mis datos personales. <a href="#registro" data-toast="Aviso de privacidad (simulación)">Leer aviso de privacidad</a></span></label><span class="msg">Debes aceptar el tratamiento de datos para crear la cuenta.</span></div>
+      <div class="alert err" id="regErr" role="alert">Completa todos los campos obligatorios.</div>
+      <div class="alert err" id="regDup" role="alert">Este correo ya está registrado. <a href="#ingresar">Inicia sesión</a> o usa otro correo.</div>
+      <button class="btn" type="submit" style="width:100%;margin-top:20px">Registrarme</button>
+      <p style="text-align:center;margin-top:14px" class="sub">¿Ya tienes cuenta? <a href="#ingresar">Inicia sesión</a></p>
+    </form>
+    <aside class="card promo">
+      <h2>Empieza hoy, a tu ritmo</h2>
+      <ul class="steps">
+        <li><span class="n">1</span><div><b>Crea tu cuenta</b><p>Solo necesitas un correo y una contraseña.</p></div></li>
+        <li><span class="n">2</span><div><b>Cuéntanos de tu negocio</b><p>Así te recomendamos los módulos más útiles.</p></div></li>
+        <li><span class="n">3</span><div><b>Haz tu diagnóstico</b><p>Descubre en qué puedes mejorar y por dónde empezar.</p></div></li>
+      </ul>
+      <p class="sub" style="margin-top:22px"><b>Tus datos están protegidos.</b> Solo los usamos para recomendarte módulos y puedes borrarlos cuando quieras.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- 2B INGRESAR (iniciar sesión) -->
+<section class="screen" id="s-ingresar" aria-labelledby="h-ingresar">
+  <div class="auth">
+    <form class="card" id="fLog" novalidate>
+      <h1 id="h-ingresar">Bienvenida de nuevo</h1><p class="sub" id="logSub">Entra para seguir con tus módulos.</p>
+      <div class="field"><label for="lMail">Correo electrónico</label><input id="lMail" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com"></div>
+      <div class="field"><label for="lPw">Contraseña</label><div class="pw"><input id="lPw" type="password" autocomplete="current-password" placeholder="Tu contraseña"><button type="button" data-show="lPw">Mostrar</button></div></div>
+      <div class="alert err" id="logErr" role="alert">Correo o contraseña incorrectos. Revisa los datos o crea tu cuenta si aún no la tienes.</div>
+      <button class="btn" type="submit" style="width:100%;margin-top:20px">Entrar</button>
+      <p style="text-align:center;margin-top:14px"><a href="#ingresar" data-toast="Te enviaremos un enlace a tu correo (simulación)">¿Olvidaste tu contraseña?</a></p>
+    </form>
+    <p class="auth-alt">¿Primera vez aquí? <a class="btn sec sm" href="#registro">Crear mi cuenta</a></p>
+  </div>
+</section>
+
+<!-- USUARIOS REGISTRADOS -->
+<section class="screen" id="s-usuarios" aria-labelledby="h-usuarios">
+  <h1 id="h-usuarios">Usuarios registrados</h1><p class="sub">Los correos se guardan en este navegador cuando alguien crea su cuenta. Las contraseñas no se muestran.</p>
+  <div class="card" style="margin-top:20px"><div id="uList"></div><div class="actions" style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap"><button class="btn sec sm" id="uClear" type="button">Borrar todos</button><a class="btn sm" href="#registro">Crear una cuenta</a></div></div>
+</section>
+
+<!-- 3 PERFIL -->
+<section class="screen" id="s-perfil" aria-labelledby="h-perfil">
+  <h1 id="h-perfil">Mi perfil y datos del negocio</h1><p class="sub">Cuéntanos de tu negocio para recomendarte los módulos más útiles.</p>
+  <div class="card" style="margin-top:20px;padding:16px 20px"><div style="display:flex;justify-content:space-between;font-weight:600"><span>Perfil completo</span><span id="pPct">0%</span></div><div class="bar" style="margin-top:8px"><i id="pBar" style="width:0"></i></div></div>
+  <div class="grid3" style="margin-top:20px">
+    <form class="card" id="fPer" novalidate>
+      <div class="cols2" style="gap:18px">
+        <div class="field" style="margin-top:0"><label for="pNom">Nombre del negocio</label><input id="pNom" type="text" placeholder="Ej: Tienda La Esperanza"><span class="msg">Escribe el nombre de tu negocio.</span></div>
+        <div class="field" style="margin-top:0"><label for="pSec">Sector</label><select id="pSec"><option value="">Seleccionar</option><option>Alimentos y bebidas</option><option>Ropa y accesorios</option><option>Tienda de barrio</option><option>Servicios</option><option>Artesanías</option><option>Otro</option></select><span class="msg">Elige el sector de tu negocio.</span></div>
+      </div>
+      <div class="field"><label for="pPro">Productos o servicios que ofreces</label><textarea id="pPro" placeholder="Describe brevemente lo que vendes u ofreces"></textarea></div>
+      <div class="cols2" style="gap:18px">
+        <div class="field"><label for="pWa">WhatsApp</label><input id="pWa" type="text" inputmode="tel" placeholder="3XX XXX XXXX"></div>
+        <div class="field"><label for="pRed">Instagram o Facebook</label><input id="pRed" type="text" placeholder="@minegocio"></div>
+      </div>
+      <div class="alert ok" id="perOk" role="status">Datos guardados. Ya puedes ver los módulos recomendados.</div>
+      <div class="btns"><button class="btn" type="submit">Guardar</button><button class="btn sec" type="button" id="perCancel">Cancelar</button></div>
+    </form>
+    <aside class="card" style="background:var(--primary-soft);border-color:transparent"><h3>¿Para qué sirven estos datos?</h3><p class="sub" style="color:var(--fg);opacity:.8">Para personalizar tus módulos y proteger tu información. Puedes editarlos cuando quieras.</p><a class="btn acc sm" style="margin-top:18px" href="#diagnostico">Hacer mi diagnóstico</a></aside>
+  </div>
+</section>
+
+<!-- 4 DIAGNOSTICO -->
+<section class="screen" id="s-diagnostico" aria-labelledby="h-diag">
+  <h1 id="h-diag">Diagnóstico de competencias digitales</h1><p class="sub">Responde con sinceridad, no hay respuestas malas.</p>
+  <div id="dQ">
+    <div class="card" style="margin-top:20px;padding:16px 20px"><div style="display:flex;justify-content:space-between;font-weight:600"><span id="dLbl">Pregunta 1 de 8</span><span id="dPct">0%</span></div><div class="bar" style="margin-top:8px"><i id="dBar" style="width:0"></i></div></div>
+    <div class="card" style="margin-top:20px"><h2 id="dText" style="font-size:1.3rem"></h2><div id="dOpts" role="radiogroup" aria-labelledby="dText"></div>
+      <div class="alert err" id="dErr" role="alert">Elige una opción para continuar.</div>
+      <div class="qrow"><button class="btn sec" id="dPrev" type="button">← Anterior</button><button class="btn" id="dNext" type="button">Siguiente →</button></div></div>
+  </div>
+  <div id="dR" hidden>
+    <div class="card" style="margin-top:20px"><h2>Así están tus competencias digitales</h2><div id="dBars"></div>
+      <div class="example" id="dRec"></div>
+      <div class="btns"><a class="btn" id="dGo" href="#modulo">Empezar con este módulo</a><button class="btn sec" id="dRe" type="button">Repetir diagnóstico</button></div></div>
+  </div>
+</section>
+
+<!-- 5 MODULO -->
+<section class="screen" id="s-modulo" aria-labelledby="h-mod">
+  <p class="crumb" id="mCrumb"></p>
+  <div class="mlayout">
+    <aside class="card" style="padding:18px"><h3 id="mName"></h3><div id="mLes"></div>
+      <p style="margin-top:18px;font-weight:600;display:flex;justify-content:space-between"><span>Tu avance</span><span id="mPct"></span></p><div class="bar" style="margin-top:8px"><i id="mBar"></i></div></aside>
+    <div class="card">
+      <h1 id="h-mod" style="font-size:1.55rem"></h1>
+      <div class="video" style="margin-top:18px" role="img" aria-label="Video de la lección"><span class="play"><svg width="30" height="30"><use href="#i-play"/></svg></span><small id="mDur">Video · 3 min</small></div>
+      <p id="mTxt" style="margin-top:18px"></p>
+      <div class="example"><b>Ejemplo</b><p id="mEj"></p></div>
+      <div class="btns"><button class="btn sec" id="mPrev" type="button">← Anterior</button><button class="btn" id="mDone" type="button">Marcar como completada</button><button class="btn sec" id="mNext" type="button">Siguiente →</button><button class="btn acc" id="mTpl" type="button" style="margin-left:auto">Descargar plantilla</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 PROGRESO -->
+<section class="screen" id="s-progreso" aria-labelledby="h-prog">
+  <h1 id="h-prog">Hola, María</h1><p class="sub">Este es tu avance en Florencia Digital Emprende.</p>
+  <div class="grid3" style="margin-top:22px">
+    <div class="stack">
+      <div class="card"><div style="display:flex;justify-content:space-between;font:600 1.1rem var(--display)"><span>Avance general</span><span id="gPct"></span></div><div class="bar" style="margin-top:12px;height:16px"><i id="gBar"></i></div></div>
+      <div class="card"><h2 style="font-size:1.2rem">Mis módulos</h2><div id="pMods"></div></div>
+    </div>
+    <div class="stack">
+      <div class="card" style="background:var(--primary-soft);border-color:transparent"><h3>Continúa donde ibas</h3><p id="pCont" style="margin-top:8px"></p><button class="btn" id="pGo" type="button" style="margin-top:16px;width:100%">Continuar</button></div>
+      <div class="card"><h3>Pendiente por hacer</h3><ul class="pend" id="pPend"></ul></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="wrap"><footer class="rev">
+  <p><b>Para quien revisa el prototipo.</b> Ir directo a una pantalla:</p>
+  <p style="margin-top:6px"><a href="#inicio">1 Inicio</a><a href="#registro">2 Crear cuenta</a><a href="#ingresar">2B Iniciar sesión</a><a href="#perfil">3 Perfil</a><a href="#diagnostico">4 Diagnóstico</a><a href="#modulo">5 Módulo</a><a href="#progreso">6 Progreso</a><a href="#usuarios">Usuarios registrados</a><a href="#" id="demo">Entrar como usuaria de ejemplo</a></p>
+</footer></div>
+
+<nav class="bottom" id="navBot" aria-label="Principal móvil"></nav>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var ICONS=["i-share","i-cam","i-chat","i-lock","i-warn"];
+var MODS=[
+ {n:"Promoción en redes",min:30,ic:0,area:"redes",ls:[
+   {t:"Qué publicar",tx:"Antes de publicar, piensa en qué le sirve a tu cliente: un producto nuevo, una oferta de la semana o una foto del día. Con tres tipos de publicación a la semana es suficiente para que te recuerden.",ej:"Lunes: producto nuevo. Miércoles: oferta de la semana. Viernes: foto del negocio y horarios."},
+   {t:"Escribir el texto",tx:"Un buen texto es corto y dice tres cosas: qué vendes, cuánto cuesta y cómo te escriben. Usa palabras de todos los días y termina con una invitación clara a comprar o preguntar.",ej:"“Hoy tenemos promoción en nuestros jugos naturales. Pregunta por el combo de la semana y escríbenos al WhatsApp.”"},
+   {t:"Usar la plantilla",tx:"La plantilla de publicación trae espacios para el producto, el precio y el contacto. Solo cambia los datos y guárdala como imagen para subirla a tus redes.",ej:"Producto: jugo de maracuyá 12 oz. Precio: $6.000. Pedidos: WhatsApp 300 123 4567."},
+   {t:"Mini evaluación",tx:"Responde tres preguntas rápidas para comprobar lo aprendido. No hay nota, sirve para saber qué repasar.",ej:"Pregunta 1: ¿qué tres datos debe tener una publicación de venta?"}]},
+ {n:"Fotos de productos",min:20,ic:1,area:"fotos",ls:[
+   {t:"Luz natural",tx:"La luz de una ventana mejora cualquier foto. Ubica el producto cerca de la ventana y evita el flash, que crea sombras duras.",ej:"Toma la foto entre las 9 y las 11 de la mañana, con el producto frente a la ventana."},
+   {t:"Fondo y encuadre",tx:"Usa un fondo liso y deja espacio alrededor del producto. Toma la foto de frente y otra desde arriba.",ej:"Una sábana blanca sirve como fondo para artesanías y comida."},
+   {t:"Descripción que vende",tx:"Escribe debajo de la foto el nombre, el tamaño y el precio. Una buena descripción evita muchas preguntas.",ej:"Mochila wayuu mediana, 30 cm, $85.000. Entrega en Florencia."},
+   {t:"Mini evaluación",tx:"Comprueba lo aprendido sobre luz, fondo y descripción.",ej:"Pregunta 1: ¿por qué conviene evitar el flash?"}]},
+ {n:"Atención a clientes",min:25,ic:2,area:"atencion",ls:[
+   {t:"Primer mensaje",tx:"Responde pronto y saluda por el nombre. Un primer mensaje amable abre la conversación y genera confianza.",ej:"“Hola, Carmen, gracias por escribirnos. ¿Qué producto te interesa?”"},
+   {t:"Preguntas frecuentes",tx:"Prepara respuestas guardadas para lo que más te preguntan: precios, horarios y formas de pago.",ej:"Atendemos de lunes a sábado, de 8 a. m. a 6 p. m. Recibimos Nequi y efectivo."},
+   {t:"Reclamos con respeto",tx:"Ante un reclamo, escucha, pide disculpas si corresponde y propone una solución concreta.",ej:"“Lamentamos el inconveniente. Podemos cambiar el producto mañana mismo.”"},
+   {t:"Mini evaluación",tx:"Revisa qué tan bien respondes a un cliente.",ej:"Pregunta 1: ¿qué debe incluir un primer mensaje?"}]},
+ {n:"Seguridad digital",min:30,ic:3,area:"seguridad",ls:[
+   {t:"Contraseñas seguras",tx:"Una contraseña segura es larga y distinta para cada cuenta. Combina palabras, números y símbolos que solo tú recuerdes.",ej:"En vez de 12345678, usa algo como Jugos&Maracuya2026."},
+   {t:"Verificación en dos pasos",tx:"Activa el segundo paso en WhatsApp y en tus redes: aunque alguien tenga tu contraseña, no podrá entrar sin el código.",ej:"WhatsApp > Ajustes > Cuenta > Verificación en dos pasos."},
+   {t:"Protege tus datos",tx:"Comparte solo lo necesario y nunca envíes claves ni códigos por mensaje.",ej:"Ningún banco te pedirá tu clave por WhatsApp."},
+   {t:"Mini evaluación",tx:"Comprueba lo aprendido sobre contraseñas y datos.",ej:"Pregunta 1: ¿qué hace segura una contraseña?"}]},
+ {n:"Evita fraudes",min:20,ic:4,area:"seguridad",ls:[
+   {t:"Mensajes sospechosos",tx:"Desconfía de mensajes con urgencia, premios inesperados o errores de ortografía. Los estafadores buscan que actúes sin pensar.",ej:"“Ganaste un televisor, entra aquí en 10 minutos.”"},
+   {t:"Enlaces dudosos",tx:"Antes de tocar un enlace, revisa la dirección completa. Si no reconoces el sitio, no lo abras.",ej:"banc0-seguro.co no es lo mismo que el sitio oficial de tu banco."},
+   {t:"Cómo reportar",tx:"Si recibes un intento de fraude, no respondas, bloquea el contacto y repórtalo en la misma aplicación.",ej:"Toca el nombre del contacto > Bloquear y reportar."},
+   {t:"Mini evaluación",tx:"Practica con tres mensajes y decide cuáles son seguros.",ej:"Pregunta 1: ¿qué señal indica que un mensaje puede ser fraude?"}]}
+];
+var S={logged:false,nombre:"María",perfil:{nom:"Tienda La Esperanza",sec:"Alimentos y bebidas",pro:"Jugos naturales y refrigerios",wa:"300 123 4567",red:""},cur:{m:0,l:1},
+  done:[[1,0,0,0],[1,1,0,0],[1,0,0,0],[0,0,0,0],[0,0,0,0]],
+  q:{i:0,a:[],res:null}};
+var QS=[
+ ["redes","¿Con qué frecuencia publicas tus productos en redes sociales?"],
+ ["atencion","¿Con qué frecuencia usas WhatsApp o redes sociales para atender a tus clientes?"],
+ ["seguridad","¿Con qué frecuencia usas contraseñas distintas y verificación en dos pasos?"],
+ ["fotos","¿Con qué frecuencia tomas fotos de tus productos con buena luz?"],
+ ["redes","¿Con qué frecuencia escribes textos con precio y forma de contacto?"],
+ ["atencion","¿Con qué frecuencia respondes a tus clientes el mismo día?"],
+ ["seguridad","¿Con qué frecuencia revisas un enlace antes de abrirlo?"],
+ ["fotos","¿Con qué frecuencia agregas una descripción clara a tus fotos?"]];
+var OPT=["Nunca","Algunas veces","Casi siempre","Siempre"];
+var AREA={redes:["Redes sociales",0],atencion:["Atención a clientes",2],seguridad:["Seguridad digital",3],fotos:["Fotos de productos",1]};
+
+function icon(n,s){return '<svg width="'+(s||24)+'" height="'+(s||24)+'"><use href="#'+n+'"/></svg>'}
+function toast(t){var e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},2400)}
+function pctM(i){var d=S.done[i];return Math.round(d.reduce(function(a,b){return a+b},0)/d.length*100)}
+function pctG(){var t=0,n=0;S.done.forEach(function(d){d.forEach(function(x){t+=x;n++})});return Math.round(t/n*100)}
+function nextLes(i){var d=S.done[i];for(var k=0;k<d.length;k++){if(!d[k])return k}return 0}
+
+/* navegación */
+var PUB=[["inicio","Inicio","i-home"],["modulos","Módulos","i-grid"],["ingresar","Ingresar","i-user"],["registro","Crear cuenta","i-user"]];
+var PRIV=[["inicio","Inicio","i-home"],["modulos","Módulos","i-grid"],["perfil","Mi perfil","i-user"],["progreso","Mi progreso","i-chart"]];
+function buildNav(r){
+  var items=S.logged?PRIV:PUB, h="", b="";
+  items.forEach(function(x){var cur=(r===x[0]||(x[0]==="modulos"&&(r==="modulo"||r==="diagnostico")))?' aria-current="page"':'';
+    h+='<a href="#'+x[0]+'"'+cur+'>'+x[1]+'</a>';
+    var bl=x[1].replace("Mi p","P");b+='<a href="#'+x[0]+'"'+cur+'>'+icon(x[2],22)+bl+'</a>';});
+  if(S.logged)h+='<a href="#inicio" id="out">Salir</a>';
+  else b=b;
+  $("#navMain").innerHTML=h;
+  var nb=$("#navBot");nb.innerHTML=b;
+  nb.style.gridTemplateColumns="repeat("+items.length+",1fr)";
+  var o=$("#out");if(o)o.addEventListener("click",function(){S.logged=false;toast("Sesión cerrada")});
+}
+
+/* tarjetas de módulos */
+function modCards(){
+  return MODS.map(function(m,i){var p=pctM(i);var rec=S.logged&&S.q.res&&AREA[S.q.res][1]===i?'<span class="tag">Recomendado para ti</span>':'';var tag=rec||(p===0?"":'<span class="tag">'+p+'% completado</span>');
+    return '<article class="card mod"><span class="ic">'+icon(ICONS[m.ic],26)+'</span><h3>'+m.n+'</h3><p class="meta">Nivel básico · '+m.min+' min</p>'+tag+'<button class="btn sec sm" data-mod="'+i+'" type="button">Ver módulo</button></article>'}).join("");
+}
+function renderMods(){$("#modsHome").innerHTML=modCards();$("#modsAll").innerHTML=modCards()}
+
+/* usuarios guardados (simulación: solo en este navegador) */
+var MEM=[];
+function hsh(t){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<t.length;i++){var c=t.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+function getUsers(){try{var r=localStorage.getItem("fde_users");return r?JSON.parse(r):MEM}catch(e){return MEM}}
+function setUsers(a){MEM=a;try{localStorage.setItem("fde_users",JSON.stringify(a))}catch(e){}}
+function findUser(m){m=m.trim().toLowerCase();var u=getUsers();for(var i=0;i<u.length;i++){if(u[i].e===m)return u[i]}return null}
+function renderUsers(){var u=getUsers();var esc=function(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")};$("#uList").innerHTML=u.length?'<div style="overflow-x:auto"><table class="utab"><thead><tr><th>Nombre</th><th>Correo</th><th>Fecha</th></tr></thead><tbody>'+u.map(function(x){return '<tr><td>'+esc(x.n)+'</td><td>'+esc(x.e)+'</td><td>'+x.f+'</td></tr>'}).join("")+'</tbody></table></div>':'<p class="sub">Todavía no hay usuarios registrados.</p>'}
+
+/* inicio con sesión */
+function contInfo(){var best=0;for(var i=0;i<MODS.length;i++){var p=pctM(i);if(p>0&&p<100){best=i;break}}S.cont={m:best,l:nextLes(best)}}
+function renderHome(){
+  var on=S.logged;$("#homeIn").hidden=!on;$("#heroPub").hidden=on;if(!on)return;
+  $("#h-home").textContent="Hola, "+S.nombre;var g=pctG();$("#hPct").textContent=g+"%";$("#hBar").style.width=g+"%";
+  contInfo();var m=MODS[S.cont.m],k=S.cont.l;
+  $("#hGo").textContent="Continuar: "+m.n;
+  $("#hSub").textContent=(k===3?"Mini evaluación":"Lección "+(k+1)+": "+m.ls[k].t)+" te espera en "+m.n+".";
+  $("#hDiag").hidden=!!S.q.res;
+}
+
+/* perfil */
+function perPct(){var p=S.perfil;var n=[p.nom,p.sec,p.pro,p.wa,p.red].filter(function(x){return x&&x.trim()}).length;return n*20}
+function renderPer(){var p=S.perfil;$("#pNom").value=p.nom;$("#pSec").value=p.sec;$("#pPro").value=p.pro;$("#pWa").value=p.wa;$("#pRed").value=p.red;var v=perPct();$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%";$("#perOk").classList.remove("on");$$("#fPer .field").forEach(function(f){f.classList.remove("bad")})}
+
+/* diagnóstico */
+function renderQ(){var q=S.q;$("#dQ").hidden=false;$("#dR").hidden=true;
+  $("#dLbl").textContent="Pregunta "+(q.i+1)+" de "+QS.length;var p=Math.round(q.i/QS.length*100);$("#dPct").textContent=p+"%";$("#dBar").style.width=p+"%";
+  $("#dText").textContent=QS[q.i][1];$("#dErr").classList.remove("on");
+  $("#dOpts").innerHTML=OPT.map(function(o,k){var s=q.a[q.i]===k;return '<label class="opt'+(s?" sel":"")+'"><input type="radio" name="dq" value="'+k+'"'+(s?" checked":"")+'><span>'+o+'</span></label>'}).join("");
+  $$("#dOpts input").forEach(function(r){r.addEventListener("change",function(){S.q.a[S.q.i]=+r.value;$$("#dOpts .opt").forEach(function(l){l.classList.remove("sel")});r.parentNode.classList.add("sel");$("#dErr").classList.remove("on")})});
+  $("#dPrev").disabled=q.i===0;$("#dNext").textContent=q.i===QS.length-1?"Ver resultado":"Siguiente →";
+}
+function showRes(){var sc={redes:0,atencion:0,seguridad:0,fotos:0};QS.forEach(function(x,i){sc[x[0]]+=S.q.a[i]||0});
+  var order=["redes","atencion","seguridad","fotos"],low=order[0],html="";
+  order.forEach(function(k){var v=Math.round(sc[k]/6*100),l=v<40?"Bajo":v<70?"Medio":"Alto";if(v<sc[low]/6*100)low=k;
+    html+='<div class="row-bar"><span>'+AREA[k][0]+' <span class="lvl '+l+'">'+l+'</span></span><div class="bar"><i style="width:'+v+'%"></i></div><b>'+v+'%</b></div>'});
+  $("#dBars").innerHTML=html;S.q.res=low;
+  var mi=AREA[low][1];$("#dRec").innerHTML='<b>Te sugerimos empezar por</b><p>'+MODS[mi].n+'. Es el área con más espacio para mejorar y el módulo dura '+MODS[mi].min+' minutos.</p>';
+  $("#dQ").hidden=true;$("#dR").hidden=false;$("#dGo").setAttribute("data-mod",mi);
+}
+
+/* módulo */
+function renderMod(){var m=MODS[S.cur.m],d=S.done[S.cur.m],l=S.cur.l,L=m.ls[l];
+  $("#mCrumb").textContent="Módulos  >  "+m.n+"  >  "+(l===3?"Mini evaluación":"Lección "+(l+1));
+  $("#mName").textContent=m.n;
+  $("#mLes").innerHTML=m.ls.map(function(x,k){return '<button class="les" type="button" data-les="'+k+'"'+(k===l?' aria-current="true"':'')+'><span class="dot'+(d[k]?' done':'')+'">'+(d[k]?icon("i-check",14):"")+'</span>'+(k===3?"":"Lección "+(k+1)+": ")+x.t+'</button>'}).join("");
+  var p=pctM(S.cur.m);$("#mPct").textContent=p+"%";$("#mBar").style.width=p+"%";
+  $("#h-mod").textContent=(l===3?"":"Lección "+(l+1)+": ")+L.t;$("#mTxt").textContent=L.tx;$("#mEj").textContent=L.ej;
+  $("#mDur").textContent="Video · "+(l===3?"2":"3")+" min";
+  $("#mDone").textContent=d[l]?"Lección completada":"Marcar como completada";$("#mDone").disabled=!!d[l];
+  $("#mPrev").disabled=l===0;$("#mNext").disabled=l===3;
+}
+
+/* progreso */
+function renderProg(){$("#h-prog").textContent="Hola, "+S.nombre;var g=pctG();$("#gPct").textContent=g+"%";$("#gBar").style.width=g+"%";
+  $("#pMods").innerHTML=MODS.map(function(m,i){var p=pctM(i);return '<div class="row-bar"><span>'+m.n+'</span><div class="bar"><i style="width:'+p+'%"></i></div><b>'+p+'%</b></div>'}).join("");
+  var best=0;for(var i=0;i<MODS.length;i++){var p=pctM(i);if(p>0&&p<100){best=i;break}}
+  var k=nextLes(best);S.cont={m:best,l:k};
+  $("#pCont").innerHTML=MODS[best].n+"<br>"+(k===3?"Mini evaluación":"Lección "+(k+1)+": "+MODS[best].ls[k].t);
+  var pend=[];MODS.forEach(function(m,i){S.done[i].forEach(function(x,k){if(!x&&pend.length<3&&i===best)pend.push((k===3?"Hacer la mini evaluación":"Terminar lección "+(k+1))+" · "+m.n)})});
+  $("#pPend").innerHTML=pend.map(function(x){return '<li><span class="dot"></span>'+x+'</li>'}).join("");
+}
+
+/* rutas */
+var ROUTES=["inicio","modulos","registro","ingresar","usuarios","perfil","diagnostico","modulo","progreso"],PROT={perfil:1,diagnostico:1,progreso:1};
+function route(){
+  var r=(location.hash||"#inicio").slice(1);if(ROUTES.indexOf(r)<0)r="inicio";
+  if(PROT[r]&&!S.logged){r="ingresar";history.replaceState(null,"","#ingresar");$("#logSub").textContent="Inicia sesión para continuar.";}else if(r==="ingresar"){$("#logSub").textContent="Entra para seguir con tus módulos."}
+  if(S.logged&&(r==="registro"||r==="ingresar")){r="inicio";history.replaceState(null,"","#inicio")}
+  $$("section.screen").forEach(function(s){s.classList.toggle("on",s.id==="s-"+r)});
+  buildNav(r);
+  if(r==="inicio"||r==="modulos")renderMods();
+  if(r==="inicio")renderHome();
+  if(r==="usuarios")renderUsers();
+  if(r==="perfil")renderPer();
+  if(r==="diagnostico"){if(S.q.res)showRes();else renderQ()}
+  if(r==="modulo")renderMod();
+  if(r==="progreso")renderProg();
+  window.scrollTo(0,0);
+  var h=$("#s-"+r+" h1");if(h){h.setAttribute("tabindex","-1")}
+}
+window.addEventListener("hashchange",route);
+
+/* eventos */
+function login(n){S.logged=true;toast(n)}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-mod]");if(t){var i=+t.getAttribute("data-mod");S.cur={m:i,l:nextLes(i)};location.hash="#modulo";if(location.hash==="#modulo")route();return}
+  var s=e.target.closest("[data-show]");if(s){var f=$("#"+s.getAttribute("data-show"));f.type=f.type==="password"?"text":"password";s.textContent=f.type==="password"?"Mostrar":"Ocultar";return}
+  var ts=e.target.closest("[data-toast]");if(ts){e.preventDefault();toast(ts.getAttribute("data-toast"));return}
+  var ls=e.target.closest("[data-les]");if(ls){S.cur.l=+ls.getAttribute("data-les");renderMod();return}
+  if(e.target.closest("[data-focus=login]")){setTimeout(function(){var x=$("#lMail");if(x)x.focus()},50)}
+});
+$("#demo").addEventListener("click",function(e){e.preventDefault();login("Entraste como María Gómez (ejemplo)");location.hash="#progreso";route()});
+function chk(id,ok){var f=$("#"+id).closest(".field");f.classList.toggle("bad",!ok);return ok}
+$("#fReg").addEventListener("submit",function(e){e.preventDefault();
+  var em=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var a=chk("rNom",$("#rNom").value.trim().length>2),b=chk("rMail",em.test($("#rMail").value)),c=chk("rPw",$("#rPw").value.length>=8),d=chk("rPw2",$("#rPw2").value===$("#rPw").value&&$("#rPw2").value!==""),k=$("#rCons").checked;$("#fCons").classList.toggle("bad",!k);
+  var ok=a&&b&&c&&d&&k;$("#regErr").classList.toggle("on",!ok);$("#regDup").classList.remove("on");
+  if(ok){
+    var mail=$("#rMail").value.trim().toLowerCase();
+    if(findUser(mail)){$("#regDup").classList.add("on");return}
+    var u=getUsers().slice();var d0=new Date();
+    u.push({n:$("#rNom").value.trim(),e:mail,h:hsh(mail+"|"+$("#rPw").value),f:d0.getDate()+"/"+(d0.getMonth()+1)+"/"+d0.getFullYear()});setUsers(u);
+    S.nombre=$("#rNom").value.trim().split(/\s+/)[0];login("Cuenta creada. ¡Bienvenida!");location.hash="#perfil";route()}});
+$("#fLog").addEventListener("submit",function(e){e.preventDefault();
+  var mail=$("#lMail").value.trim().toLowerCase(),u=findUser(mail);
+  var ok=!!u&&u.h===hsh(mail+"|"+$("#lPw").value);$("#logErr").classList.toggle("on",!ok);
+  if(ok){S.nombre=u.n.split(/\s+/)[0];login("Sesión iniciada");location.hash="#inicio";route()}});
+$("#uClear").addEventListener("click",function(){setUsers([]);renderUsers();toast("Usuarios borrados")});
+$("#fPer").addEventListener("submit",function(e){e.preventDefault();
+  var a=chk("pNom",$("#pNom").value.trim()!==""),b=chk("pSec",$("#pSec").value!=="");
+  if(a&&b){S.perfil={nom:$("#pNom").value,sec:$("#pSec").value,pro:$("#pPro").value,wa:$("#pWa").value,red:$("#pRed").value};var v=perPct();$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%";$("#perOk").classList.add("on");toast("Datos guardados")}else{$("#perOk").classList.remove("on")}});
+$("#perCancel").addEventListener("click",renderPer);
+["pNom","pSec","pPro","pWa","pRed"].forEach(function(id){$("#"+id).addEventListener("input",function(){var v=[$("#pNom").value,$("#pSec").value,$("#pPro").value,$("#pWa").value,$("#pRed").value].filter(function(x){return x.trim()}).length*20;$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%"})});
+$("#dPrev").addEventListener("click",function(){if(S.q.i>0){S.q.i--;renderQ()}});
+$("#dNext").addEventListener("click",function(){if(S.q.a[S.q.i]===undefined){$("#dErr").classList.add("on");return}
+  if(S.q.i<QS.length-1){S.q.i++;renderQ()}else showRes()});
+$("#dRe").addEventListener("click",function(){S.q={i:0,a:[],res:null};renderQ()});
+$("#mDone").addEventListener("click",function(){S.done[S.cur.m][S.cur.l]=1;renderMod();toast("Lección completada")});
+$("#mPrev").addEventListener("click",function(){if(S.cur.l>0){S.cur.l--;renderMod()}});
+$("#mNext").addEventListener("click",function(){if(S.cur.l<3){S.cur.l++;renderMod()}});
+$("#mTpl").addEventListener("click",function(){toast("Plantilla lista para descargar (simulación)")});
+$("#hGo").addEventListener("click",function(){contInfo();S.cur={m:S.cont.m,l:S.cont.l};location.hash="#modulo";route()});
+$("#pGo").addEventListener("click",function(){S.cur={m:S.cont.m,l:S.cont.l};location.hash="#modulo";route()});
+route();
+})();
+</script>
+
+</body>
+</html>
