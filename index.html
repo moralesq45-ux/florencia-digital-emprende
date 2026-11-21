@@ -294,7 +294,7 @@ nav.bottom{display:none}
   <p class="crumb" id="mCrumb"></p>
   <div class="mlayout">
     <aside class="card" style="padding:18px"><h3 id="mName"></h3><div id="mLes"></div>
-      <p style="margin-top:18px;font-weight:600;display:flex;justify-content:space-between"><span>Tu avance</span><span id="mPct"></span></p><div class="bar" style="margin-top:8px"><i id="mBar"></i></div></aside>
+      <div id="mProg"><p style="margin-top:18px;font-weight:600;display:flex;justify-content:space-between"><span>Tu avance</span><span id="mPct"></span></p><div class="bar" style="margin-top:8px"><i id="mBar"></i></div></div></aside>
     <div class="card">
       <h1 id="h-mod" style="font-size:1.55rem"></h1>
       <div class="video" style="margin-top:18px" role="img" aria-label="Video de la lección"><span class="play"><svg width="30" height="30"><use href="#i-play"/></svg></span><small id="mDur">Video · 3 min</small></div>
@@ -321,10 +321,7 @@ nav.bottom{display:none}
 </section>
 </main>
 
-<div class="wrap"><footer class="rev">
-  <p><b>Para quien revisa el prototipo.</b> Ir directo a una pantalla:</p>
-  <p style="margin-top:6px"><a href="#inicio">1 Inicio</a><a href="#registro">2 Crear cuenta</a><a href="#ingresar">2B Iniciar sesión</a><a href="#perfil">3 Perfil</a><a href="#diagnostico">4 Diagnóstico</a><a href="#modulo">5 Módulo</a><a href="#progreso">6 Progreso</a><a href="#usuarios">Usuarios registrados</a><a href="#" id="demo">Entrar como usuaria de ejemplo</a></p>
-</footer></div>
+
 
 <nav class="bottom" id="navBot" aria-label="Principal móvil"></nav>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -394,12 +391,12 @@ function buildNav(r){
   $("#navMain").innerHTML=h;
   var nb=$("#navBot");nb.innerHTML=b;
   nb.style.gridTemplateColumns="repeat("+items.length+",1fr)";
-  var o=$("#out");if(o)o.addEventListener("click",function(){S.logged=false;toast("Sesión cerrada")});
+  var o=$("#out");if(o)o.addEventListener("click",function(){S.logged=false;S.email=null;toast("Sesión cerrada");setTimeout(route,0)});
 }
 
 /* tarjetas de módulos */
 function modCards(){
-  return MODS.map(function(m,i){var p=pctM(i);var rec=S.logged&&S.q.res&&AREA[S.q.res][1]===i?'<span class="tag">Recomendado para ti</span>':'';var tag=rec||(p===0?"":'<span class="tag">'+p+'% completado</span>');
+  return MODS.map(function(m,i){var p=pctM(i);var rec=S.logged&&S.q.res&&AREA[S.q.res][1]===i?'<span class="tag">Recomendado para ti</span>':'';var tag=!S.logged?'':rec||(p===0?"":'<span class="tag">'+p+'% completado</span>');
     return '<article class="card mod"><span class="ic">'+icon(ICONS[m.ic],26)+'</span><h3>'+m.n+'</h3><p class="meta">Nivel básico · '+m.min+' min</p>'+tag+'<button class="btn sec sm" data-mod="'+i+'" type="button">Ver módulo</button></article>'}).join("");
 }
 function renderMods(){$("#modsHome").innerHTML=modCards();$("#modsAll").innerHTML=modCards()}
@@ -411,6 +408,11 @@ function getUsers(){try{var r=localStorage.getItem("fde_users");return r?JSON.pa
 function setUsers(a){MEM=a;try{localStorage.setItem("fde_users",JSON.stringify(a))}catch(e){}}
 function findUser(m){m=m.trim().toLowerCase();var u=getUsers();for(var i=0;i<u.length;i++){if(u[i].e===m)return u[i]}return null}
 function renderUsers(){var u=getUsers();var esc=function(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;")};$("#uList").innerHTML=u.length?'<div style="overflow-x:auto"><table class="utab"><thead><tr><th>Nombre</th><th>Correo</th><th>Fecha</th></tr></thead><tbody>'+u.map(function(x){return '<tr><td>'+esc(x.n)+'</td><td>'+esc(x.e)+'</td><td>'+x.f+'</td></tr>'}).join("")+'</tbody></table></div>':'<p class="sub">Todavía no hay usuarios registrados.</p>'}
+
+/* progreso por usuario */
+var DEMO_DONE=[[1,0,0,0],[1,1,0,0],[1,0,0,0],[0,0,0,0],[0,0,0,0]];
+function zeros(){return [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]}
+function saveUser(){if(!S.email)return;var u=getUsers().slice();for(var i=0;i<u.length;i++){if(u[i].e===S.email){u[i].d=S.done;u[i].p=S.perfil;u[i].r=S.q.res;break}}setUsers(u)}
 
 /* inicio con sesión */
 function contInfo(){var best=0;for(var i=0;i<MODS.length;i++){var p=pctM(i);if(p>0&&p<100){best=i;break}}S.cont={m:best,l:nextLes(best)}}
@@ -439,7 +441,7 @@ function showRes(){var sc={redes:0,atencion:0,seguridad:0,fotos:0};QS.forEach(fu
   var order=["redes","atencion","seguridad","fotos"],low=order[0],html="";
   order.forEach(function(k){var v=Math.round(sc[k]/6*100),l=v<40?"Bajo":v<70?"Medio":"Alto";if(v<sc[low]/6*100)low=k;
     html+='<div class="row-bar"><span>'+AREA[k][0]+' <span class="lvl '+l+'">'+l+'</span></span><div class="bar"><i style="width:'+v+'%"></i></div><b>'+v+'%</b></div>'});
-  $("#dBars").innerHTML=html;S.q.res=low;
+  $("#dBars").innerHTML=html;S.q.res=low;saveUser();
   var mi=AREA[low][1];$("#dRec").innerHTML='<b>Te sugerimos empezar por</b><p>'+MODS[mi].n+'. Es el área con más espacio para mejorar y el módulo dura '+MODS[mi].min+' minutos.</p>';
   $("#dQ").hidden=true;$("#dR").hidden=false;$("#dGo").setAttribute("data-mod",mi);
 }
@@ -448,11 +450,11 @@ function showRes(){var sc={redes:0,atencion:0,seguridad:0,fotos:0};QS.forEach(fu
 function renderMod(){var m=MODS[S.cur.m],d=S.done[S.cur.m],l=S.cur.l,L=m.ls[l];
   $("#mCrumb").textContent="Módulos  >  "+m.n+"  >  "+(l===3?"Mini evaluación":"Lección "+(l+1));
   $("#mName").textContent=m.n;
-  $("#mLes").innerHTML=m.ls.map(function(x,k){return '<button class="les" type="button" data-les="'+k+'"'+(k===l?' aria-current="true"':'')+'><span class="dot'+(d[k]?' done':'')+'">'+(d[k]?icon("i-check",14):"")+'</span>'+(k===3?"":"Lección "+(k+1)+": ")+x.t+'</button>'}).join("");
-  var p=pctM(S.cur.m);$("#mPct").textContent=p+"%";$("#mBar").style.width=p+"%";
+  $("#mLes").innerHTML=m.ls.map(function(x,k){return '<button class="les" type="button" data-les="'+k+'"'+(k===l?' aria-current="true"':'')+'>'+(S.logged?'<span class="dot'+(d[k]?' done':'')+'">'+(d[k]?icon("i-check",14):"")+'</span>':'')+(k===3?"":"Lección "+(k+1)+": ")+x.t+'</button>'}).join("");
+  var p=pctM(S.cur.m);$("#mPct").textContent=p+"%";$("#mBar").style.width=p+"%";$("#mProg").hidden=!S.logged;
   $("#h-mod").textContent=(l===3?"":"Lección "+(l+1)+": ")+L.t;$("#mTxt").textContent=L.tx;$("#mEj").textContent=L.ej;
   $("#mDur").textContent="Video · "+(l===3?"2":"3")+" min";
-  $("#mDone").textContent=d[l]?"Lección completada":"Marcar como completada";$("#mDone").disabled=!!d[l];
+  $("#mDone").textContent=!S.logged?"Inicia sesión para guardar":d[l]?"Lección completada":"Marcar como completada";$("#mDone").disabled=S.logged&&!!d[l];
   $("#mPrev").disabled=l===0;$("#mNext").disabled=l===3;
 }
 
@@ -489,13 +491,12 @@ window.addEventListener("hashchange",route);
 /* eventos */
 function login(n){S.logged=true;toast(n)}
 document.addEventListener("click",function(e){
-  var t=e.target.closest("[data-mod]");if(t){var i=+t.getAttribute("data-mod");S.cur={m:i,l:nextLes(i)};location.hash="#modulo";if(location.hash==="#modulo")route();return}
+  var t=e.target.closest("[data-mod]");if(t){var i=+t.getAttribute("data-mod");S.cur={m:i,l:S.logged?nextLes(i):0};location.hash="#modulo";if(location.hash==="#modulo")route();return}
   var s=e.target.closest("[data-show]");if(s){var f=$("#"+s.getAttribute("data-show"));f.type=f.type==="password"?"text":"password";s.textContent=f.type==="password"?"Mostrar":"Ocultar";return}
   var ts=e.target.closest("[data-toast]");if(ts){e.preventDefault();toast(ts.getAttribute("data-toast"));return}
   var ls=e.target.closest("[data-les]");if(ls){S.cur.l=+ls.getAttribute("data-les");renderMod();return}
   if(e.target.closest("[data-focus=login]")){setTimeout(function(){var x=$("#lMail");if(x)x.focus()},50)}
 });
-$("#demo").addEventListener("click",function(e){e.preventDefault();login("Entraste como María Gómez (ejemplo)");location.hash="#progreso";route()});
 function chk(id,ok){var f=$("#"+id).closest(".field");f.classList.toggle("bad",!ok);return ok}
 $("#fReg").addEventListener("submit",function(e){e.preventDefault();
   var em=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -506,22 +507,22 @@ $("#fReg").addEventListener("submit",function(e){e.preventDefault();
     if(findUser(mail)){$("#regDup").classList.add("on");return}
     var u=getUsers().slice();var d0=new Date();
     u.push({n:$("#rNom").value.trim(),e:mail,h:hsh(mail+"|"+$("#rPw").value),f:d0.getDate()+"/"+(d0.getMonth()+1)+"/"+d0.getFullYear()});setUsers(u);
-    S.nombre=$("#rNom").value.trim().split(/\s+/)[0];login("Cuenta creada. ¡Bienvenida!");location.hash="#perfil";route()}});
+    S.nombre=$("#rNom").value.trim().split(/\s+/)[0];S.email=mail;S.done=zeros();S.perfil={nom:"",sec:"",pro:"",wa:"",red:""};S.q={i:0,a:[],res:null};login("Cuenta creada. ¡Bienvenida!");location.hash="#perfil";route()}});
 $("#fLog").addEventListener("submit",function(e){e.preventDefault();
   var mail=$("#lMail").value.trim().toLowerCase(),u=findUser(mail);
   var ok=!!u&&u.h===hsh(mail+"|"+$("#lPw").value);$("#logErr").classList.toggle("on",!ok);
-  if(ok){S.nombre=u.n.split(/\s+/)[0];login("Sesión iniciada");location.hash="#inicio";route()}});
+  if(ok){S.nombre=u.n.split(/\s+/)[0];S.email=mail;S.done=u.d||zeros();S.perfil=u.p||{nom:"",sec:"",pro:"",wa:"",red:""};S.q={i:0,a:[],res:u.r||null};login("Sesión iniciada");location.hash="#inicio";route()}});
 $("#uClear").addEventListener("click",function(){setUsers([]);renderUsers();toast("Usuarios borrados")});
 $("#fPer").addEventListener("submit",function(e){e.preventDefault();
   var a=chk("pNom",$("#pNom").value.trim()!==""),b=chk("pSec",$("#pSec").value!=="");
-  if(a&&b){S.perfil={nom:$("#pNom").value,sec:$("#pSec").value,pro:$("#pPro").value,wa:$("#pWa").value,red:$("#pRed").value};var v=perPct();$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%";$("#perOk").classList.add("on");toast("Datos guardados")}else{$("#perOk").classList.remove("on")}});
+  if(a&&b){S.perfil={nom:$("#pNom").value,sec:$("#pSec").value,pro:$("#pPro").value,wa:$("#pWa").value,red:$("#pRed").value};var v=perPct();$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%";$("#perOk").classList.add("on");saveUser();toast("Datos guardados")}else{$("#perOk").classList.remove("on")}});
 $("#perCancel").addEventListener("click",renderPer);
 ["pNom","pSec","pPro","pWa","pRed"].forEach(function(id){$("#"+id).addEventListener("input",function(){var v=[$("#pNom").value,$("#pSec").value,$("#pPro").value,$("#pWa").value,$("#pRed").value].filter(function(x){return x.trim()}).length*20;$("#pPct").textContent=v+"%";$("#pBar").style.width=v+"%"})});
 $("#dPrev").addEventListener("click",function(){if(S.q.i>0){S.q.i--;renderQ()}});
 $("#dNext").addEventListener("click",function(){if(S.q.a[S.q.i]===undefined){$("#dErr").classList.add("on");return}
   if(S.q.i<QS.length-1){S.q.i++;renderQ()}else showRes()});
 $("#dRe").addEventListener("click",function(){S.q={i:0,a:[],res:null};renderQ()});
-$("#mDone").addEventListener("click",function(){S.done[S.cur.m][S.cur.l]=1;renderMod();toast("Lección completada")});
+$("#mDone").addEventListener("click",function(){if(!S.logged){location.hash="#ingresar";route();return}S.done[S.cur.m][S.cur.l]=1;saveUser();renderMod();toast("Lección completada")});
 $("#mPrev").addEventListener("click",function(){if(S.cur.l>0){S.cur.l--;renderMod()}});
 $("#mNext").addEventListener("click",function(){if(S.cur.l<3){S.cur.l++;renderMod()}});
 $("#mTpl").addEventListener("click",function(){toast("Plantilla lista para descargar (simulación)")});
